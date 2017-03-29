@@ -7,6 +7,7 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 
 import com.rockwellcollins.spear.Constant;
+import com.rockwellcollins.spear.File;
 import com.rockwellcollins.spear.Pattern;
 import com.rockwellcollins.spear.Specification;
 import com.rockwellcollins.spear.TypeDef;
@@ -15,10 +16,9 @@ import com.rockwellcollins.spear.translate.transformations.PerformTransforms;
 public class SpearDocument extends Document {
 
 	public Map<String,Pattern> patterns = new HashMap<>();
-	public Map<String,Specification> specifications = new HashMap<>();
 
 	public Specification getMain() {
-		return specifications.get(this.mainName);
+		return (Specification) files.get(this.mainName);
 	}
 	
 	public SpearDocument(Specification main) {
@@ -40,9 +40,9 @@ public class SpearDocument extends Document {
 				patterns.put(pattern.getName(),pattern);
 			}
 			
-			if (o instanceof Specification) {
-				Specification spec = (Specification) o;
-				specifications.put(spec.getName(),spec);
+			if (o instanceof File) {
+				File f = (File) o;
+				files.put(f.getName(),f);
 			}
 		}
 	}

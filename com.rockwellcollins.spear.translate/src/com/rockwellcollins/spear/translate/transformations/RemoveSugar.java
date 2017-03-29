@@ -19,17 +19,20 @@ public class RemoveSugar extends SpearSwitch<Void> {
 		doc.typedefs.values().stream().forEach(td -> transform(td));
 		doc.constants.values().stream().forEach(c -> transform(c));
 		doc.patterns.values().stream().forEach(p -> transform(p));
-		doc.specifications.values().stream().forEach(s -> transform(s));
+		doc.files.values().stream().forEach(f -> transform(f));
 	}
 	
 	public static void transform(PatternDocument doc) {
 		doc.typedefs.values().stream().forEach(td -> transform(td));
 		doc.constants.values().stream().forEach(c -> transform(c));
 		doc.patterns.values().stream().forEach(p -> transform(p));
+		doc.files.values().stream().forEach(f -> transform(f));
 	}
 	
 	public static void transform(TypeDocument doc) {
+		doc.files.values().stream().forEach(f -> transform(f));
 		doc.typedefs.values().stream().forEach(td -> transform(td));
+		doc.files.values().stream().forEach(f -> transform(f));
 	}
 	
 	private static EObject transform(EObject o) {

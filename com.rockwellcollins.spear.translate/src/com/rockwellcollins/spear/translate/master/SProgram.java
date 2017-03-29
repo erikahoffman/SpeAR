@@ -43,7 +43,7 @@ public class SProgram extends SMapElement {
 		@SuppressWarnings("unused")
 		List<String> renamedPatterns = SPattern.addNames(document.patterns.values(), this);
 		@SuppressWarnings("unused")
-		List<String> renamedSpecifications = SSpecification.addNames(document.specifications.values(), map);
+		List<String> renamedSpecifications = SSpecification.addNames(document.files.values(), map);
 
 		//process the patterns. Nothing special to do here.
 		patterns.addAll(SPattern.build(document.patterns.values(), this));
@@ -54,7 +54,7 @@ public class SProgram extends SMapElement {
 		 * 2. resolve the calls among them
 		 * 3. resolve the call variables
 		 */
-		specifications.addAll(SSpecification.build(document.specifications.values(), map));
+		specifications.addAll(SSpecification.build(document.files.values(), map));
 		specifications.stream().forEach(s -> s.resolveCalls(specifications));
 		specifications.stream().forEach(s -> s.resolveCallVars());
 		

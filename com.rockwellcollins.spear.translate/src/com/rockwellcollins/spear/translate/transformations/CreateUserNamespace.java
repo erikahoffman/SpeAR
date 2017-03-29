@@ -9,8 +9,8 @@ import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.util.SimpleAttributeResolver;
 
 import com.rockwellcollins.spear.Constant;
+import com.rockwellcollins.spear.File;
 import com.rockwellcollins.spear.Pattern;
-import com.rockwellcollins.spear.Specification;
 import com.rockwellcollins.spear.TypeDef;
 import com.rockwellcollins.spear.translate.intermediate.PatternDocument;
 import com.rockwellcollins.spear.translate.intermediate.SpearDocument;
@@ -52,14 +52,14 @@ public class CreateUserNamespace {
 		doc.patterns = newPatterns;
 
 		//process the patterns
-		Map<String,Specification> newSpecs = new HashMap<>();
-		BiConsumer<String,Specification> specConsumer = (s,spec) -> {
+		Map<String,File> newFiles = new HashMap<>();
+		BiConsumer<String,File> specConsumer = (s,spec) -> {
 			String newString = CreateUserNamespace.makeUsername(s);
 			map.put(spec, transform(spec));
-			newSpecs.put(newString, spec);
+			newFiles.put(newString, spec);
 		};
-		doc.specifications.forEach(specConsumer);
-		doc.specifications = newSpecs;
+		doc.files.forEach(specConsumer);
+		doc.files = newFiles;
 
 		doc.mainName=CreateUserNamespace.makeUsername(doc.mainName);
 		return map;

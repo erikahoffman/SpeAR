@@ -129,7 +129,7 @@ public class CheckLogicalEntailment implements IWorkbenchWindowActionDelegate {
 				Map<String, String> merged = workingCopy.mergeMaps();
 				Renaming renaming = new MapRenaming(merged, Mode.IDENTITY);
 				List<Boolean> invert = new ArrayList<>();
-				Specification s = workingCopy.specifications.get(workingCopy.mainName);
+				Specification s = (Specification) workingCopy.files.get(workingCopy.mainName);
 				for (Constraint c : s.getBehaviors()) {
 					if (c instanceof FormalConstraint) {
 						FormalConstraint fc = (FormalConstraint) c;

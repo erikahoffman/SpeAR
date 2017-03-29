@@ -9,8 +9,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 
 import com.rockwellcollins.spear.Constant;
+import com.rockwellcollins.spear.File;
 import com.rockwellcollins.spear.TypeDef;
 import com.rockwellcollins.spear.util.SpearSwitch;
+import com.rockwellcollins.spear.utilities.Utilities;
 
 public class FindTypeDependencies extends SpearSwitch<Integer> {
 
@@ -55,7 +57,9 @@ public class FindTypeDependencies extends SpearSwitch<Integer> {
 		for(EObject ref : e.eCrossReferences()) {
 			if(!traversed.contains(ref)) {
 				traversed.add(ref);
-				this.doSwitch(ref);	
+				this.doSwitch(ref);
+				File f = Utilities.getRoot(ref);
+				set.add(f);
 			}
 		}
 		return 0;

@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import com.rockwellcollins.spear.Constant;
 import com.rockwellcollins.spear.Expr;
+import com.rockwellcollins.spear.File;
 import com.rockwellcollins.spear.Pattern;
 import com.rockwellcollins.spear.TypeDef;
 import com.rockwellcollins.spear.Variable;
@@ -30,6 +31,11 @@ public class TypeDocument extends Document {
 			if (e instanceof Constant) {
 				Constant c = (Constant) e;
 				constants.put(c.getName(),c);
+			}
+			
+			if (e instanceof File) {
+				File f = (File) e;
+				files.put(f.getName(), f);
 			}
 		}
 	}

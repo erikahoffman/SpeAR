@@ -1,5 +1,6 @@
 package com.rockwellcollins.spear.translate.master;
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.ListUtils;
 import org.eclipse.xtext.EcoreUtil2;
 
+import com.rockwellcollins.spear.File;
 import com.rockwellcollins.spear.NormalizedCall;
 import com.rockwellcollins.spear.Specification;
 import com.rockwellcollins.spear.translate.actions.SpearRuntimeOptions;
@@ -33,16 +35,30 @@ import jkind.lustre.builders.NodeBuilder;
 
 public class SSpecification extends SMapElement {
 
-	public static List<String> addNames(Collection<Specification> list, SpearMap map) {
-		return list.stream().map(s -> SSpecification.addName(s, map)).collect(Collectors.toList());
+	public static List<String> addNames(Collection<File> list, SpearMap map) {
+		List<String> processed = new ArrayList<>();
+		for(File f : list) {
+			if (f instanceof Specification) {
+				Specification s = (Specification) f;
+				processed.add(SSpecification.addName(s, map));
+			}
+		}
+		return processed;
 	}
 	
 	public static String addName(Specification s, SpearMap map) {
 		return map.getProgramName(s.getName());
 	}
 	
-	public static List<SSpecification> build(Collection<Specification> list, SpearMap map) {
-		return list.stream().map(s -> SSpecification.build(s, map)).collect(Collectors.toList());
+	public static List<SSpecification> build(Collection<File> list, SpearMap map) {
+		List<SSpecification> processed = new ArrayList<>();
+		for(File f : list) {
+			if (f instanceof Specification) {
+				Specification s = (Specification) f;
+				processed.add(SSpecification.build(s, map));
+			}
+		}
+		return processed;
 	}
 	
 	public static SSpecification build(Specification s, SpearMap map) {

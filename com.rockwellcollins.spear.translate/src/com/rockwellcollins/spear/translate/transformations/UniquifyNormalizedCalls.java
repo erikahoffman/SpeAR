@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.eclipse.xtext.EcoreUtil2;
 
+import com.rockwellcollins.spear.File;
 import com.rockwellcollins.spear.NormalizedCall;
 import com.rockwellcollins.spear.Specification;
 import com.rockwellcollins.spear.translate.intermediate.SpearDocument;
@@ -27,7 +28,7 @@ public class UniquifyNormalizedCalls {
 		return proposed;
 	}
 	
-	private Map<String,Specification> specs = new HashMap<>();
+	private Map<String,File> specs = new HashMap<>();
 	private Map<String,String> map = new HashMap<>();
 	
 	private void processSpec(Specification s) {
@@ -56,7 +57,7 @@ public class UniquifyNormalizedCalls {
 		d.typedefs.values().stream().forEach(td -> map.put(td.getName(), td.getName()));
 		d.constants.values().stream().forEach(c -> map.put(c.getName(), c.getName()));
 		d.patterns.values().stream().forEach(p -> map.put(p.getName(), p.getName()));
-		d.specifications.values().stream().forEach(s -> map.put(s.getName(), s.getName()));
+		d.files.values().stream().forEach(s -> map.put(s.getName(), s.getName()));
 	}
 	
 	public void makeUnique(SpearDocument d) {
@@ -64,6 +65,6 @@ public class UniquifyNormalizedCalls {
 		Specification main = d.getMain();
 		specs.put(main.getName(),main);
 		processSpec(main);
-		d.specifications=new HashMap<>(this.specs);
+		d.files=new HashMap<>(this.specs);
 	}
 }

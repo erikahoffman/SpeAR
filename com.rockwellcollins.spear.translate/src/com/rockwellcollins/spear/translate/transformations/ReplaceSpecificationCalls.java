@@ -1,5 +1,7 @@
 package com.rockwellcollins.spear.translate.transformations;
 
+import java.util.function.Consumer;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.EcoreUtil2;
 
@@ -17,7 +19,13 @@ import com.rockwellcollins.spear.utilities.GetAllIdRefs;
 public class ReplaceSpecificationCalls extends SpearSwitch<EObject> {
 
 	public static void transform(SpearDocument doc) {
-		doc.specifications.values().stream().forEach(s -> transform(s));
+		Consumer<File> consumer = f -> {
+			if (f instanceof Specification) {
+				Specification spec = (Specification) f;
+				transform(spec);
+			}
+		};
+		doc.files.values().stream().forEach(consumer);
 	}
 	
 	private static File transform(Specification s) {

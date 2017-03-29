@@ -19,7 +19,7 @@ public class ReplaceShortHandRecords {
 	public static void transform(SpearDocument doc) {
 		doc.constants.values().stream().forEach(c -> transform(c));
 		doc.patterns.values().stream().forEach(p -> transform(p));
-		doc.specifications.values().stream().forEach(s -> transform(s));
+		doc.files.values().stream().forEach(s -> transform(s));
 	}
 	
 	public static void transform(PatternDocument doc) {

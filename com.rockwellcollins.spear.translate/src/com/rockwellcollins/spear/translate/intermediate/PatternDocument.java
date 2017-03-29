@@ -6,6 +6,7 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 
 import com.rockwellcollins.spear.Constant;
+import com.rockwellcollins.spear.File;
 import com.rockwellcollins.spear.Pattern;
 import com.rockwellcollins.spear.TypeDef;
 import com.rockwellcollins.spear.translate.transformations.PerformTransforms;
@@ -13,6 +14,10 @@ import com.rockwellcollins.spear.translate.transformations.PerformTransforms;
 public class PatternDocument extends Document {
 
 	public Map<String,Pattern> patterns = new HashMap<>();
+	
+	public Pattern getMain() {
+		return patterns.get(mainName);
+	}
 	
 	public PatternDocument(Pattern main) {
 		this.mainName = main.getName();
@@ -30,6 +35,11 @@ public class PatternDocument extends Document {
 			if (o instanceof Pattern) {
 				Pattern p = (Pattern) o;
 				patterns.put(p.getName(),p);
+			}
+			
+			if (o instanceof File) {
+				File f = (File) o;
+				files.put(f.getName(), f);
 			}
 		}
 	}
@@ -50,10 +60,6 @@ public class PatternDocument extends Document {
 			e.printStackTrace();
 			System.exit(-1);
 		}		
-	}
-	
-	public Pattern getMain() {
-		return patterns.get(mainName);
 	}
 	
 	public Map<String,String> mergeMaps() {

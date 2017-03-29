@@ -19,17 +19,19 @@ public class NormalizeOperators {
 	public static void transform(SpearDocument doc) {
 		doc.typedefs.values().stream().forEach(td -> transform(td));
 		doc.constants.values().stream().forEach(c -> transform(c));
+		doc.files.values().stream().forEach(s -> transform(s));
 		doc.patterns.values().stream().forEach(p -> transform(p));
-		doc.specifications.values().stream().forEach(s -> transform(s));
 	}
 	
 	public static void transform(PatternDocument doc) {
 		doc.typedefs.values().stream().forEach(td -> transform(td));
 		doc.constants.values().stream().forEach(c -> transform(c));
+		doc.files.values().stream().forEach(s -> transform(s));
 		doc.patterns.values().stream().forEach(p -> transform(p));
 	}
 	
 	public static void transform(TypeDocument doc) {
+		doc.files.values().stream().forEach(s -> transform(s));
 		doc.typedefs.values().stream().forEach(td -> transform(td));
 	}
 	
