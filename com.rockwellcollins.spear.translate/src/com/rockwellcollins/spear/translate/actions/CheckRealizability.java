@@ -1,5 +1,7 @@
 package com.rockwellcollins.spear.translate.actions;
 
+import java.util.Map;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -45,13 +47,12 @@ import jkind.results.layout.Layout;
 public class CheckRealizability implements IWorkbenchWindowActionDelegate {
 
 	private static final String TERMINATE_ID = "com.rockwellcollins.spear.translate.commands.terminateAnalysis";
-	
+
 	private IWorkbenchWindow window;
 
 	@Override
 	public void run(IAction action) {
-		SpearInjectorUtil
-				.setInjector(SpearActivator.getInstance().getInjector(SpearActivator.COM_ROCKWELLCOLLINS_SPEAR));
+		SpearInjectorUtil.setInjector(SpearActivator.getInstance().getInjector(SpearActivator.COM_ROCKWELLCOLLINS_SPEAR));
 
 		IEditorPart editor = window.getActivePage().getActiveEditor();
 		if (!(editor instanceof XtextEditor)) {
@@ -62,7 +63,7 @@ public class CheckRealizability implements IWorkbenchWindowActionDelegate {
 		XtextEditor xte = (XtextEditor) editor;
 		IXtextDocument doc = xte.getDocument();
 
-		runAnalysis(doc,new NullProgressMonitor());
+		runAnalysis(doc, new NullProgressMonitor());
 	}
 
 	private void runAnalysis(IXtextDocument doc, IProgressMonitor monitor) {
@@ -85,31 +86,31 @@ public class CheckRealizability implements IWorkbenchWindowActionDelegate {
 					return null;
 				}
 
-				//Set the runtime options
+				// Set the runtime options
 				SpearRuntimeOptions.setRuntimeOptions();
-		
+
 				SpearDocument workingCopy = new SpearDocument(specification);
 				workingCopy.transform();
 				SProgram program = SProgram.build(workingCopy);
 				Program p = program.getRealizability();
 
-				if(SpearRuntimeOptions.printFinalLustre) {
+				if (SpearRuntimeOptions.printFinalLustre) {
 					IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-					
-					//create the generated folder
+
+					// create the generated folder
 					URI folderURI = ActionUtilities.createFolder(state.getURI(), "generated");
 					ActionUtilities.makeFolder(root.getFolder(new Path(folderURI.toPlatformString(true))));
-					
-					//create the lustre file
+
+					// create the lustre file
 					String filename = ActionUtilities.getGeneratedFile(state.getURI(), "lus");
-					URI lustreURI = ActionUtilities.createURI(folderURI, filename);					
+					URI lustreURI = ActionUtilities.createURI(folderURI, filename);
 					IResource finalResource = root.getFile(new Path(lustreURI.toPlatformString(true)));
 					ActionUtilities.printResource(finalResource, p.toString());
-					
+
 					// refresh the workspace
 					root.refreshLocal(IResource.DEPTH_INFINITE, null);
 				}
-				
+
 				JRealizabilityApi api = PreferencesUtil.getJRealizabilityApi();
 				try {
 					api.checkAvailable();
@@ -118,7 +119,8 @@ public class CheckRealizability implements IWorkbenchWindowActionDelegate {
 					throw e;
 				}
 
-				Renaming renaming = new MapRenaming(workingCopy.renamed.get(workingCopy.getMain()), Mode.IDENTITY);
+				Map<String,String> merged = workingCopy.mergeMaps();
+				Renaming renaming = new MapRenaming(merged, Mode.IDENTITY);
 				JRealizabilityResult result = new JRealizabilityResult("SpeAR Realizability Result", renaming);
 				activateTerminateHandler(monitor);
 				showView(result, new SpearRealizabilityLayout(specification));
@@ -142,17 +144,17 @@ public class CheckRealizability implements IWorkbenchWindowActionDelegate {
 	}
 
 	private IHandlerActivation activation;
-	
+
 	private void activateTerminateHandler(final IProgressMonitor monitor) {
 		final IHandlerService handlerService = (IHandlerService) window.getService(IHandlerService.class);
 		window.getShell().getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				activation = handlerService.activateHandler(TERMINATE_ID,new TerminateHandler(monitor));
+				activation = handlerService.activateHandler(TERMINATE_ID, new TerminateHandler(monitor));
 			}
 		});
 	}
-	
+
 	private void deactivateTerminateHandler() {
 		final IHandlerService handlerService = (IHandlerService) window.getService(IHandlerService.class);
 		window.getShell().getDisplay().syncExec(new Runnable() {
@@ -162,7 +164,7 @@ public class CheckRealizability implements IWorkbenchWindowActionDelegate {
 			}
 		});
 	}
-	
+
 	private void showView(final JKindResult result, final Layout layout) {
 		window.getShell().getDisplay().syncExec(new Runnable() {
 			@Override
@@ -178,10 +180,12 @@ public class CheckRealizability implements IWorkbenchWindowActionDelegate {
 	}
 
 	@Override
-	public void selectionChanged(IAction arg0, ISelection arg1) {}
+	public void selectionChanged(IAction arg0, ISelection arg1) {
+	}
 
 	@Override
-	public void dispose() {}
+	public void dispose() {
+	}
 
 	@Override
 	public void init(IWorkbenchWindow arg0) {

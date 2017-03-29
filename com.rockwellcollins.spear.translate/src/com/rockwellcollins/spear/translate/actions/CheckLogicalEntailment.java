@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -56,8 +57,7 @@ public class CheckLogicalEntailment implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void run(IAction action) {
-		SpearInjectorUtil
-				.setInjector(SpearActivator.getInstance().getInjector(SpearActivator.COM_ROCKWELLCOLLINS_SPEAR));
+		SpearInjectorUtil.setInjector(SpearActivator.getInstance().getInjector(SpearActivator.COM_ROCKWELLCOLLINS_SPEAR));
 
 		IEditorPart editor = window.getActivePage().getActiveEditor();
 		if (!(editor instanceof XtextEditor)) {
@@ -126,7 +126,8 @@ public class CheckLogicalEntailment implements IWorkbenchWindowActionDelegate {
 				JKindApi api = PreferencesUtil.getJKindApi();
 				setApiOptions(api);
 
-				Renaming renaming = new MapRenaming(workingCopy.renamed.get(workingCopy.getMain()), Mode.IDENTITY);
+				Map<String, String> merged = workingCopy.mergeMaps();
+				Renaming renaming = new MapRenaming(merged, Mode.IDENTITY);
 				List<Boolean> invert = new ArrayList<>();
 				Specification s = workingCopy.specifications.get(workingCopy.mainName);
 				for (Constraint c : s.getBehaviors()) {
@@ -151,8 +152,7 @@ public class CheckLogicalEntailment implements IWorkbenchWindowActionDelegate {
 
 				JKindResult result = new JKindResult("Spear Result", p.getMainNode().properties, invert, renaming);
 				activateTerminateHandler(monitor);
-				List<String> requirements = specification.getRequirements().stream().map(req -> req.getName())
-						.collect(toList());
+				List<String> requirements = specification.getRequirements().stream().map(req -> req.getName()).collect(toList());
 				List<String> observers = getObservers(specification);
 				showView(result, new SpearRegularLayout(specification), requirements, observers);
 
@@ -218,14 +218,12 @@ public class CheckLogicalEntailment implements IWorkbenchWindowActionDelegate {
 		});
 	}
 
-	private void showView(final JKindResult result, final Layout layout, List<String> requirements,
-			List<String> observers) {
+	private void showView(final JKindResult result, final Layout layout, List<String> requirements, List<String> observers) {
 		window.getShell().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					SpearEntailmentResultsView page = (SpearEntailmentResultsView) window.getActivePage()
-							.showView(SpearEntailmentResultsView.ID);
+					SpearEntailmentResultsView page = (SpearEntailmentResultsView) window.getActivePage().showView(SpearEntailmentResultsView.ID);
 					page.setInput(result, layout, requirements, observers);
 				} catch (PartInitException e) {
 					e.printStackTrace();
