@@ -51,4 +51,17 @@ public class PatternDocument extends Document {
 			System.exit(-1);
 		}		
 	}
+	
+	public Pattern getMain() {
+		return patterns.get(mainName);
+	}
+	
+	public Map<String,String> mergeMaps() {
+		Map<String,String> merged = new HashMap<>();
+		merged.putAll(renamed.get(this.getMain()));
+		
+		typedefs.forEach((s,td) -> merged.putAll(renamed.get(td)));
+		constants.forEach((s,c) -> merged.putAll(renamed.get(c)));
+		return merged;
+	}
 }
