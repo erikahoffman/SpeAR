@@ -51,7 +51,7 @@ public class CreateUserNamespace {
 		doc.patterns.forEach(pConsumer);
 		doc.patterns = newPatterns;
 
-		//process the patterns
+		//process the files
 		Map<String,File> newFiles = new HashMap<>();
 		BiConsumer<String,File> specConsumer = (s,spec) -> {
 			String newString = CreateUserNamespace.makeUsername(s);
@@ -60,12 +60,13 @@ public class CreateUserNamespace {
 		};
 		doc.files.forEach(specConsumer);
 		doc.files = newFiles;
-
+		
 		doc.mainName=CreateUserNamespace.makeUsername(doc.mainName);
+		doc.renamed=map;
 		return map;
 	}
 	
-	public static Map<EObject,Map<String,String>> transform(PatternDocument doc) {
+	public static void transform(PatternDocument doc) {
 		Map<EObject,Map<String,String>> map = new HashMap<>();
 		//process the typedefs
 		Map<String,TypeDef> newTypeDefs = new HashMap<>();
@@ -97,11 +98,21 @@ public class CreateUserNamespace {
 		doc.patterns.forEach(pConsumer);
 		doc.patterns = newPatterns;
 		
+		//process the files
+		Map<String,File> newFiles = new HashMap<>();
+		BiConsumer<String,File> specConsumer = (s,spec) -> {
+			String newString = CreateUserNamespace.makeUsername(s);
+			map.put(spec, transform(spec));
+			newFiles.put(newString, spec);
+		};
+		doc.files.forEach(specConsumer);
+		doc.files = newFiles;
+		
 		doc.mainName=CreateUserNamespace.makeUsername(doc.mainName);
-		return map;		
+		doc.renamed=map;
 	}
 	
-	public static Map<EObject,Map<String,String>> transform(TypeDocument doc) {
+	public static void transform(TypeDocument doc) {
 		Map<EObject,Map<String,String>> map = new HashMap<>();
 
 		//process the typedefs
@@ -114,8 +125,18 @@ public class CreateUserNamespace {
 		doc.typedefs.forEach(tdConsumer);
 		doc.typedefs = newTypeDefs;
 		
+		//process the files
+		Map<String,File> newFiles = new HashMap<>();
+		BiConsumer<String,File> specConsumer = (s,spec) -> {
+			String newString = CreateUserNamespace.makeUsername(s);
+			map.put(spec, transform(spec));
+			newFiles.put(newString, spec);
+		};
+		doc.files.forEach(specConsumer);
+		doc.files = newFiles;
+		
 		doc.mainName=CreateUserNamespace.makeUsername(doc.mainName);
-		return map;		
+		doc.renamed=map;
 	}
 	
 	public static Map<String,String> transform(EObject o) {

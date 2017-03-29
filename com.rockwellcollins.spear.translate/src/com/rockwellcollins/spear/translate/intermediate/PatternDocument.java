@@ -54,7 +54,7 @@ public class PatternDocument extends Document {
 	
 	public void transform() {
 		try {
-			this.renamed = PerformTransforms.apply(this);
+			PerformTransforms.apply(this);
 		} catch (Exception e) {
 			System.err.println("Error performing transformations.");
 			e.printStackTrace();

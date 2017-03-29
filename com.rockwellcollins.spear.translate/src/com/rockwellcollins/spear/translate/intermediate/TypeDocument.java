@@ -48,10 +48,8 @@ public class TypeDocument extends Document {
 		this.pattern = createPattern();
 	}
 	
-	//FIXME: Refactor please.
 	private Pattern createPattern() {
 		Pattern p = Create.createPattern(this.mainName + "_tcc");
-		
 		TypeDef main = this.getMain();
 		Variable in = Create.createVariable("in", Create.createUserType(main));
 		p.getInputs().add(in);
@@ -74,7 +72,7 @@ public class TypeDocument extends Document {
 
 	public void transform() {
 		try {
-			this.renamed = PerformTransforms.apply(this);
+			PerformTransforms.apply(this);
 		} catch (Exception e) {
 			System.err.println("Error performing transformations.");
 			e.printStackTrace();

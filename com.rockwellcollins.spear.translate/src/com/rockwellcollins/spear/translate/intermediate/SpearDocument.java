@@ -50,7 +50,7 @@ public class SpearDocument extends Document {
 	public void transform() {
 		//transform the document
 		try {
-			this.renamed = PerformTransforms.apply(this);
+			PerformTransforms.apply(this);
 		} catch (Exception e) {
 			System.err.println("Error performing transformations.");
 			e.printStackTrace();
@@ -64,6 +64,18 @@ public class SpearDocument extends Document {
 		
 		typedefs.forEach((s,td) -> merged.putAll(renamed.get(td)));
 		constants.forEach((s,c) -> merged.putAll(renamed.get(c)));
+		
+//		for(String name : typedefs.keySet()) {
+//			TypeDef td = typedefs.get(name);
+//			Map<String,String> tdMap = renamed.get(td);	
+//			merged.putAll(tdMap);
+//		}
+//		
+//		for(String name : constants.keySet()) {
+//			Constant c = constants.get(name);
+//			Map<String,String> cMap = renamed.get(c);
+//			merged.putAll(cMap);
+//		}
 		return merged;
 	}
 }
