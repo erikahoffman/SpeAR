@@ -20,6 +20,7 @@ import com.rockwellcollins.spear.SpearPackage;
 import com.rockwellcollins.spear.Specification;
 import com.rockwellcollins.spear.TypeDef;
 import com.rockwellcollins.spear.util.SpearSwitch;
+import com.rockwellcollins.spear.utilities.LiteralMapper;
 import com.rockwellcollins.spear.utilities.Utilities;
 
 public class NamesUnique extends AbstractSpearJavaValidator {
@@ -37,6 +38,8 @@ public class NamesUnique extends AbstractSpearJavaValidator {
 		set.add(e);
 		map.put(s, set);
 	}
+	
+	private LiteralMapper mapper = new LiteralMapper();
 	
 	private void checkNamesAreUnique(Map<String,Set<EObject>> globalScope, Pattern p) {
 		Map<String,Set<EObject>> map = new HashMap<>(globalScope);
@@ -58,6 +61,8 @@ public class NamesUnique extends AbstractSpearJavaValidator {
 	public void checkNamesAreUnique(Definitions d) {
 		Map<String,Set<EObject>> map = new HashMap<>();
 		SimpleAttributeResolver<EObject, String> resolver = SimpleAttributeResolver.newResolver(String.class,"name");
+		
+		insert(map,resolver.apply(d),d);
 		
 		for(Import im : d.getImports()) {
 			Set<String> importedNames = getImportedNames(d,im);
@@ -90,6 +95,8 @@ public class NamesUnique extends AbstractSpearJavaValidator {
 		Map<String,Set<EObject>> map = new HashMap<>();
 		SimpleAttributeResolver<EObject, String> resolver = SimpleAttributeResolver.newResolver(String.class,"name");
 		
+		insert(map,resolver.apply(s),s);
+		
 		for(Import im : s.getImports()) {
 			Set<String> importedNames = getImportedNames(s,im);
 			if(importedNames.contains(s.getName())) {
@@ -119,7 +126,7 @@ public class NamesUnique extends AbstractSpearJavaValidator {
 		for(String key : map.keySet()) {
 			Set<EObject> set = map.get(key);
 			if(set.size() > 1) {
-				set.stream().forEach(e -> error("Name " + key + " used in multiple places.", e, null));
+				set.stream().forEach(e -> error("Name " + key + " used in multiple places.", e, mapper.doSwitch(e)));
 			}
 		}
 	}
